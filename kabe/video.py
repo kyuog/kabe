@@ -70,7 +70,8 @@ def poster_bytes(path_or_url: str, at_seconds: float = 1.0) -> Optional[bytes]:
     """Un fotograma del vídeo como PNG (o None si no se puede)."""
     code, out, _err = _run([
         "ffmpeg", "-v", "quiet", "-ss", f"{at_seconds:.2f}", "-i", path_or_url,
-        "-frames:v", "1", "-f", "image2pipe", "-vcodec", "png", "-",
+        "-frames:v", "1", "-vf", "scale=320:-1", "-f", "image2pipe",
+        "-vcodec", "png", "-",
     ])
     if code != 0 or not out:
         return None

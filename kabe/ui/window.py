@@ -147,9 +147,10 @@ class KabeWindow(Gtk.ApplicationWindow):
         main_paned.add2(right)
 
         self.grid = LazyGrid(
-            cell_size=210,
+            cell_size=170,
             on_activate=self._on_item_activated,
             on_favorite=self._on_item_favorite,
+            on_visible=self._load_visible_thumbs,
         )
         self.grid_empty = Gtk.Label(label="")
         self.grid_empty.set_line_wrap(True)

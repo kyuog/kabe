@@ -52,7 +52,7 @@ class AppContext:
         self._db: Optional[Database] = None
         self._thumbs: Optional[Thumbnailer] = None
         self._indexer: Optional[Indexer] = None
-        self.thumb_pool = WorkerPool(1, "kabe-thumb")
+        self.thumb_pool = WorkerPool(2, "kabe-thumb")
         self.task_pool = WorkerPool(2, "kabe-task")
 
     # ------------------------------------------------------ objetos perezosos

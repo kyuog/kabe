@@ -81,6 +81,8 @@ class Indexer:
             else:
                 report.repos_ok += 1
                 report.items_total += count
+        self.db.clean_orphans()
+        self.db.mark_duplicates()
         if force:
             self.db.compact()
         return report

@@ -32,6 +32,7 @@ class RoundedImage(Gtk.DrawingArea):
         self.radius_ratio = radius_ratio
         self.selected = False
         self.hovered = False
+        self.placeholder = ""      # "video" | "image" | ""
         self.set_has_tooltip(True)
         self.add_events(
             Gdk.EventMask.BUTTON_PRESS_MASK
@@ -48,6 +49,12 @@ class RoundedImage(Gtk.DrawingArea):
     def set_pixbuf(self, pixbuf: Optional[GdkPixbuf.Pixbuf]) -> None:
         self.pixbuf = pixbuf
         self.queue_draw()
+
+    def set_placeholder(self, kind: str) -> None:
+        """Qué dibujar mientras aún no hay miniatura."""
+        if self.placeholder != kind:
+            self.placeholder = kind
+            self.queue_draw()
 
     def set_selected(self, selected: bool) -> None:
         if self.selected != selected:
@@ -81,8 +88,9 @@ class RoundedImage(Gtk.DrawingArea):
         if self.pixbuf is not None:
             _draw_cover(cr, self.pixbuf, width, height)
         else:
-            cr.set_source_rgba(0.5, 0.55, 0.65, 0.18)
+            cr.set_source_rgba(0.42, 0.47, 0.58, 0.22)
             cr.paint()
+            self._draw_placeholder(cr, width, height)
         cr.restore()
 
         # Borde: ámbar sólo en la selección; neutro al pasar el ratón.
@@ -100,6 +108,32 @@ class RoundedImage(Gtk.DrawingArea):
         cr.stroke()
         cr.restore()
         return False
+
+    def _draw_placeholder(self, cr, width: int, height: int) -> None:
+        """Lo que se ve mientras se carga: un vídeo con su triángulo o un
+        sutil tramado de espera."""
+        cr.save()
+        if self.placeholder == "video":
+            cr.set_source_rgba(0.75, 0.80, 0.90, 0.55)
+            size = min(width, height) * 0.26
+            cx, cy = width / 2, height / 2
+            cr.move_to(cx - size * 0.45, cy - size * 0.6)
+            cr.line_to(cx + size * 0.6, cy)
+            cr.line_to(cx - size * 0.45, cy + size * 0.6)
+            cr.close_path()
+            cr.fill()
+        else:
+            # Diagonales muy tenues: comunican «cargando» sin gritar.
+            cr.set_source_rgba(0.75, 0.80, 0.90, 0.10)
+            cr.set_line_width(2)
+            step = 14
+            x = -height
+            while x < width:
+                cr.move_to(x, height)
+                cr.line_to(x + height, 0)
+                x += step
+            cr.stroke()
+        cr.restore()
 
     # --------------------------------------------------------------- eventos
     def _on_enter(self, _widget, _event) -> bool:

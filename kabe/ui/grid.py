@@ -1,13 +1,13 @@
 """Cuadrícula de galería con carga bajo demanda.
 
-Sólo existen las miniaturas visibles: las que salen de pantalla se sueltan y
-vuelven al pool de reciclaje. Así la memoria se queda acotada aunque el
-catálogo tenga miles de imágenes.
+Diseño: lienzo virtualizado (Gtk.Fixed).
 
-La estructura es sencilla a propósito: una caja vertical con una caja por
-fila. Las filas que no se ven son cajas vacías con la altura de una fila,
-así la barra de desplazamiento sabe cuánto contenido hay sin crear
-miniaturas de más.
+El lienzo tiene el alto real de todo el catálogo, así que la barra de
+desplazamiento funciona sola. Encima se colocan únicamente las miniaturas
+visibles, en un número fijo de celdas que se **mueven** de sitio al
+desplazar (nunca se vuelven a colgar en otro contenedor: GTK3 no vuelve a
+medir los hijos que se añaden a un contenedor ya dimensionado y las
+miniaturas se quedarían en 1×1 px).
 """
 
 from __future__ import annotations
@@ -20,6 +20,7 @@ gi.require_version("Gtk", "3.0")
 gi.require_version("GdkPixbuf", "2.0")
 from gi.repository import Gdk, GdkPixbuf, GLib, GObject, Gtk  # noqa: E402
 
+from ..i18n import gettext_ as _  # noqa: E402
 from ..models import WallpaperItem  # noqa: E402
 from .thumbnail import RoundedImage  # noqa: E402
 
@@ -27,8 +28,8 @@ from .thumbnail import RoundedImage  # noqa: E402
 class ThumbnailCell(Gtk.Overlay):
     """Una miniatura en la cuadrícula."""
 
-    CELL_WIDTH = 210
-    CELL_HEIGHT = 132
+    CELL_WIDTH = 168
+    CELL_HEIGHT = 105
 
     __gsignals__ = {
         "activated": (GObject.SignalFlags.RUN_FIRST, None, ()),
@@ -44,6 +45,7 @@ class ThumbnailCell(Gtk.Overlay):
         self._on_favorite = on_favorite
 
         self.rounded = RoundedImage()
+        self.rounded.set_size_request(self.CELL_WIDTH, self.CELL_HEIGHT)
         self.rounded.connect("button-press-event", self._on_press)
         self.rounded.connect("key-press-event", self._on_key)
         self.add(self.rounded)
@@ -74,7 +76,7 @@ class ThumbnailCell(Gtk.Overlay):
         self.fav.set_relief(Gtk.ReliefStyle.NONE)
         self.fav.set_focus_on_click(False)
         self.fav.set_size_request(28, 28)
-        self.fav.set_tooltip_text("Guardar en favoritos")
+        self.fav.set_tooltip_text(_("Guardar en favoritos"))
         self.fav.add(self._star_label("☆"))
         self.fav.connect("clicked", lambda _b: self._favorite())
         self.add_overlay(self.fav)
@@ -117,24 +119,34 @@ class ThumbnailCell(Gtk.Overlay):
         self._thumb_key = thumb_key
         self._source = None
         self.rounded.set_pixbuf(None)
+        self.rounded.set_placeholder("video" if item.is_video else "image")
         if item.is_video:
             self.play.show()
-            self.chip.set_text(item.duration_label or "vídeo")
+            self.chip.set_text(item.duration_label or _("vídeo"))
         else:
             self.play.hide()
             self.chip.set_text(item.resolution_label if item.width else "")
         self.fav.get_child().set_text("★" if item.is_favorite else "☆")
         self.fav.set_tooltip_text(
-            "Quitar de favoritos" if item.is_favorite else "Guardar en favoritos"
+            _("Quitar de favoritos") if item.is_favorite else _("Guardar en favoritos")
         )
 
     def set_pixbuf(self, pixbuf) -> None:
         """Muestra la miniatura (ya recortada) en la tarjeta."""
         self._source = pixbuf
-        self.rounded.set_pixbuf(pixbuf)
+        self._render()
 
     def set_selected(self, selected: bool) -> None:
         self.rounded.set_selected(selected)
+
+    def set_width(self, width: int) -> None:
+        """Fija el ancho de la tarjeta (y recorta la miniatura a esa medida)."""
+        if width <= 0:
+            return
+        height = max(1, int(width * self.CELL_HEIGHT / self.CELL_WIDTH))
+        self.rounded.set_size_request(width, height)
+        self.set_size_request(width, height)
+        self._render()
 
     def relayout(self) -> None:
         """Vuelve a recortar la miniatura al tamaño actual de la celda."""
@@ -156,37 +168,36 @@ class ThumbnailCell(Gtk.Overlay):
 
 
 class LazyGrid(Gtk.ScrolledWindow):
-    """Cuadrícula virtualizada: crea celdas sólo para lo que se ve."""
+    """Cuadrícula virtualizada: sólo existen las miniaturas visibles."""
 
     def __init__(
         self,
-        cell_size: int = 210,
+        cell_size: int = 170,
         on_activate: Optional[Callable[[WallpaperItem], None]] = None,
         on_favorite: Optional[Callable[[WallpaperItem], None]] = None,
+        on_visible: Optional[Callable[[], None]] = None,
     ) -> None:
         super().__init__()
         self.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
         self.set_overlay_scrolling(False)
         self.set_shadow_type(Gtk.ShadowType.NONE)
-        self.set_propagate_natural_width(False)
-        self.set_propagate_natural_height(False)
 
         self._cell_size = cell_size
         self._gap = 10
-        self._row_height = ThumbnailCell.CELL_HEIGHT + 30
+        self._row_height = ThumbnailCell.CELL_HEIGHT + 26
         self._cols = 1
         self._cell_width = cell_size
         self._items: list[WallpaperItem] = []
-        self._cells: dict[int, ThumbnailCell] = {}
-        self._pool: list[ThumbnailCell] = []
-        self._rows: dict[int, Gtk.Box] = {}
+        self._cells: list[ThumbnailCell] = []      # todas las creadas
+        self._placed: dict[int, ThumbnailCell] = {}  # índice visible → celda
         self._on_activate = on_activate
         self._on_favorite = on_favorite
+        self._on_visible = on_visible
         self._pending_update = False
-        self._selected_index: Optional[int] = None
+        self._selected_item: Optional[WallpaperItem] = None
 
-        self.rows_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
-        self.add(self.rows_box)
+        self.canvas = Gtk.Fixed()
+        self.add(self.canvas)
 
         self.get_vadjustment().connect("value-changed", self._on_scroll)
         self.connect("size-allocate", self._on_size_allocate)
@@ -194,37 +205,27 @@ class LazyGrid(Gtk.ScrolledWindow):
     # ------------------------------------------------------------------ API
     def set_items(self, items: Sequence[WallpaperItem]) -> None:
         self._items = list(items)
-        for cell in self._cells.values():
-            self._detach(cell)
-            self._pool.append(cell)
-        self._cells.clear()
-        self._selected_index = None
-        self._clear_rows()
-        self._update_viewport(force=True)
+        self.get_vadjustment().set_value(0)
+        self._layout()
 
     def items(self) -> list[WallpaperItem]:
         return self._items
 
     def visible_indices(self) -> list[int]:
-        return sorted(self._cells.keys())
+        return sorted(self._placed.keys())
 
     def cell_for(self, index: int) -> Optional[ThumbnailCell]:
-        return self._cells.get(index)
+        return self._placed.get(index)
 
     def select(self, item: Optional[WallpaperItem]) -> None:
         """Marca visualmente la celda seleccionada (borde ámbar)."""
-        for index, cell in self._cells.items():
+        self._selected_item = item
+        for cell in self._cells:
             cell.set_selected(item is not None and cell.item is item)
-        if item is not None:
-            for index, cell in self._cells.items():
-                if cell.item is item:
-                    self._selected_index = index
-                    break
 
     def scroll_to_index(self, index: int) -> None:
         row = index // max(1, self._cols)
-        adj = self.get_vadjustment()
-        adj.set_value(row * self._row_height)
+        self.get_vadjustment().set_value(row * self._row_height)
 
     # ------------------------------------------------------------- medidas
     def _on_size_allocate(self, _widget, allocation) -> None:
@@ -233,16 +234,68 @@ class LazyGrid(Gtk.ScrolledWindow):
         if scrollbar is not None:
             width = max(200, width - scrollbar.get_allocated_width())
         cols = max(1, int((width + self._gap) // (self._cell_size + self._gap)))
-        cell_width = max(120, (width - self._gap * (cols - 1)) // cols)
+        cell_width = max(110, (width - self._gap * (cols - 1)) // cols)
         changed = cols != self._cols or cell_width != self._cell_width
         self._cols = cols
         self._cell_width = cell_width
-        self.rows_box.set_size_request(max(1, width), -1)
-        self._update_viewport(force=changed)
         if changed:
-            for cell in self._cells.values():
-                cell.relayout()
+            for cell in self._cells:
+                cell.set_width(self._cell_width)
+        self._layout()
 
+    # ------------------------------------------------------------- layout
+    def _layout(self) -> None:
+        """Coloca las miniaturas visibles en el lienzo."""
+        total = len(self._items)
+        rows = (total + self._cols - 1) // self._cols if total else 1
+        content_height = max(self._row_height, rows * self._row_height)
+        width = self._cell_width * self._cols + self._gap * max(0, self._cols - 1)
+        self.canvas.set_size_request(max(1, width), content_height)
+
+        adj = self.get_vadjustment()
+        viewport = max(self._row_height, self.get_allocated_height())
+        first_row = int(adj.get_value() // self._row_height)
+        last_row = int((adj.get_value() + viewport) // self._row_height)
+        first_row = max(0, min(first_row, max(0, rows - 1)))
+        last_row = max(first_row, min(last_row, max(0, rows - 1)))
+
+        needed = (last_row - first_row + 1) * self._cols
+        while len(self._cells) < needed:
+            cell = ThumbnailCell(self._on_activate, self._on_favorite)
+            cell.set_width(self._cell_width)
+            self.canvas.put(cell, 0, 0)
+            cell.show_all()
+            self._cells.append(cell)
+
+        self._placed.clear()
+        used = 0
+        for row in range(first_row, last_row + 1):
+            for col in range(self._cols):
+                index = row * self._cols + col
+                if index >= total:
+                    break
+                cell = self._cells[used]
+                used += 1
+                if cell.item is not self._items[index]:
+                    cell.bind(self._items[index], thumb_key(self._items[index]))
+                    cell.set_pixbuf(None)
+                cell.set_selected(
+                    self._selected_item is not None and cell.item is self._selected_item
+                )
+                x = col * (self._cell_width + self._gap)
+                y = row * self._row_height
+                self.canvas.move(cell, x, y)
+                if not cell.get_visible():
+                    cell.show_all()
+                self._placed[index] = cell
+        # Las sobrantes se esconden.
+        for cell in self._cells[used:]:
+            if cell.get_visible():
+                cell.hide()
+        if self._on_visible:
+            self._on_visible()
+
+    # ------------------------------------------------------------- scroll
     def _on_scroll(self, _adj) -> None:
         if self._pending_update:
             return
@@ -251,97 +304,8 @@ class LazyGrid(Gtk.ScrolledWindow):
 
     def _flush_scroll(self) -> bool:
         self._pending_update = False
-        self._update_viewport()
+        self._layout()
         return False
-
-    def _visible_rows(self) -> tuple[int, int]:
-        total = len(self._items)
-        if total == 0:
-            return 0, 0
-        rows = (total + self._cols - 1) // self._cols
-        adj = self.get_vadjustment()
-        value = adj.get_value()
-        page = adj.get_page_size() or self._row_height
-        first = max(0, int(value // self._row_height) - 1)
-        last = min(rows - 1, int((value + page) // self._row_height) + 1)
-        return first, last
-
-    # -------------------------------------------------------------viewport
-    def _update_viewport(self, force: bool = False) -> None:
-        total = len(self._items)
-        rows = (total + self._cols - 1) // self._cols if total else 0
-        first_row, last_row = self._visible_rows()
-
-        if total == 0:
-            self._clear_rows()
-            return
-
-        # Filas visibles: se vacían y se vuelven a llenar.
-        for row in range(first_row, last_row + 1):
-            rowbox = self._row_box(row)
-            for child in rowbox.get_children():
-                rowbox.remove(child)
-
-        for row in range(first_row, last_row + 1):
-            rowbox = self._row_box(row)
-            start = row * self._cols
-            for col in range(self._cols):
-                index = start + col
-                if index >= total:
-                    break
-                cell = self._cell_for(index)
-                cell.set_size_request(self._cell_width, self._row_height)
-                cell.set_selected(self.selected_item is cell.item)
-                rowbox.pack_start(cell, False, False, 0)
-                cell.show_all()
-
-        # Filas que no se ven: cajas vacías con la altura de una fila.
-        for row in range(rows):
-            if first_row <= row <= last_row:
-                continue
-            self._row_box(row)
-
-    @property
-    def selected_item(self) -> Optional[WallpaperItem]:
-        if self._selected_index is None:
-            return None
-        cell = self._cells.get(self._selected_index)
-        return cell.item if cell else None
-
-    def _row_box(self, row: int) -> Gtk.Box:
-        rowbox = self._rows.get(row)
-        if rowbox is None:
-            rowbox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=self._gap)
-            rowbox.set_size_request(-1, self._row_height)
-            self._rows[row] = rowbox
-            self.rows_box.pack_start(rowbox, False, True, 0)
-            rowbox.show_all()
-        return rowbox
-
-    def _cell_for(self, index: int) -> ThumbnailCell:
-        cell = self._cells.get(index)
-        if cell is None:
-            cell = self._pool.pop() if self._pool else ThumbnailCell(
-                self._on_activate, self._on_favorite
-            )
-            item = self._items[index]
-            cell.bind(item, thumb_key(item))
-            self._cells[index] = cell
-        else:
-            self._detach(cell)
-        return cell
-
-    def _detach(self, widget: Gtk.Widget) -> None:
-        parent = widget.get_parent()
-        if parent is not None:
-            parent.remove(widget)
-
-    def _clear_rows(self) -> None:
-        for rowbox in self._rows.values():
-            for child in rowbox.get_children():
-                rowbox.remove(child)
-            self.rows_box.remove(rowbox)
-        self._rows.clear()
 
 
 def thumb_key(item: WallpaperItem) -> str:

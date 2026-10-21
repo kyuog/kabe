@@ -67,6 +67,7 @@ CREATE TABLE IF NOT EXISTS items (
     folder            TEXT    NOT NULL DEFAULT '',
     category          TEXT    NOT NULL DEFAULT '',
     kind              TEXT    NOT NULL DEFAULT 'image',
+    duplicate_of      INTEGER NOT NULL DEFAULT 0,
     duration          INTEGER NOT NULL DEFAULT 0,
     tags              TEXT    NOT NULL DEFAULT '',
     ext               TEXT    NOT NULL DEFAULT '',
@@ -222,6 +223,10 @@ class Database:
             self.conn.execute(
                 "ALTER TABLE items ADD COLUMN duration INTEGER NOT NULL DEFAULT 0"
             )
+        if "duplicate_of" not in columns:
+            self.conn.execute(
+                "ALTER TABLE items ADD COLUMN duplicate_of INTEGER NOT NULL DEFAULT 0"
+            )
 
     # ----------------------------------------------------------------- meta
     def get_meta(self, key: str, default: str = "") -> str:
@@ -237,38 +242,90 @@ class Database:
 
     # ---------------------------------------------------------------- repos
     def upsert_repo(self, repo: Repo) -> int:
-        cur = self.conn.execute(
-            """
-            INSERT INTO repos(provider, owner, name, branch, folder, license,
-                              license_verified, tags, categories, author, homepage,
-                              enabled, added_at, tree_sha, tree_etag, tree_fetched_at,
-                              item_count)
-            VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
-            ON CONFLICT(provider, owner, name, folder) DO UPDATE SET
-                branch=excluded.branch, license=excluded.license,
-                license_verified=excluded.license_verified, tags=excluded.tags,
-                categories=excluded.categories, homepage=excluded.homepage,
-                enabled=excluded.enabled, tree_sha=excluded.tree_sha,
-                tree_etag=excluded.tree_etag,
-                tree_fetched_at=excluded.tree_fetched_at,
-                item_count=excluded.item_count
-            """,
-            (
-                repo.provider, repo.owner, repo.name, repo.branch, repo.folder,
-                repo.license, int(repo.license_verified),
-                " ".join(repo.tags), " ".join(repo.categories), repo.author,
-                repo.homepage, int(repo.enabled), repo.added_at or int(time.time()),
-                repo.tree_sha, repo.tree_etag, repo.tree_fetched_at, repo.item_count,
-            ),
-        )
-        self.conn.commit()
-        if cur.lastrowid:
+        """Inserta o actualiza un repositorio y devuelve su id real.
+
+        Ojo: `lastrowid` no sirve aquí, porque un UPSERT que sólo actualiza
+        lo deja a 0. Si se devolviera ese 0, los fondos se guardarían con un
+        repo_id inexistente y aparecerían duplicados en la galería.
+        """
+        with self._write_lock:
+            self.conn.execute(
+                """
+                INSERT INTO repos(provider, owner, name, branch, folder, license,
+                                  license_verified, tags, categories, author, homepage,
+                                  enabled, added_at, tree_sha, tree_etag, tree_fetched_at,
+                                  item_count)
+                VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+                ON CONFLICT(provider, owner, name, folder) DO UPDATE SET
+                    branch=excluded.branch, license=excluded.license,
+                    license_verified=excluded.license_verified, tags=excluded.tags,
+                    categories=excluded.categories, homepage=excluded.homepage,
+                    enabled=excluded.enabled, tree_sha=excluded.tree_sha,
+                    tree_etag=excluded.tree_etag,
+                    tree_fetched_at=excluded.tree_fetched_at,
+                    item_count=excluded.item_count
+                """,
+                (
+                    repo.provider, repo.owner, repo.name, repo.branch, repo.folder,
+                    repo.license, int(repo.license_verified),
+                    " ".join(repo.tags), " ".join(repo.categories), repo.author,
+                    repo.homepage, int(repo.enabled), repo.added_at or int(time.time()),
+                    repo.tree_sha, repo.tree_etag, repo.tree_fetched_at, repo.item_count,
+                ),
+            )
+            self.conn.commit()
             row = self.conn.execute(
                 "SELECT id FROM repos WHERE provider=? AND owner=? AND name=? AND folder=?",
                 (repo.provider, repo.owner, repo.name, repo.folder),
             ).fetchone()
-            return int(row["id"]) if row else int(cur.lastrowid)
-        return int(cur.lastrowid)
+        if row is None:  # pragma: no cover - sólo si alguien borra la fila a la vez
+            raise sqlite3.IntegrityError(
+                f"No se pudo guardar el repositorio {repo.owner}/{repo.name}"
+            )
+        return int(row["id"])
+
+    def mark_duplicates(self) -> int:
+        """Marca las imágenes repetidas (el mismo archivo en otro repo o
+        bajo otro nombre). La galería muestra sólo una copia de cada una."""
+        with self._write_lock:
+            self.conn.execute("UPDATE items SET duplicate_of = 0")
+            cur = self.conn.execute(
+                """UPDATE items SET duplicate_of = (
+                       SELECT MIN(i2.id) FROM items i2
+                       WHERE i2.blob_sha != '' AND i2.blob_sha = items.blob_sha
+                   )
+                   WHERE blob_sha != ''
+                     AND id != (SELECT MIN(i3.id) FROM items i3
+                                WHERE i3.blob_sha = items.blob_sha)"""
+            )
+            count = self.conn.execute(
+                "SELECT COUNT(*) c FROM items WHERE duplicate_of != 0"
+            ).fetchone()["c"]
+            self.conn.commit()
+        return int(count)
+
+    def clean_orphans(self) -> int:
+        """Borra fondos cuyo repositorio ya no existe y elimina duplicados.
+
+        Un repo_id huérfano (o un UPSERT mal resuelto) dejaba dos filas con
+        la misma ruta: la misma imagen aparecía dos veces en la galería.
+        """
+        with self._write_lock:
+            cur = self.conn.execute(
+                "DELETE FROM items WHERE repo_id IS NOT NULL "
+                "AND repo_id NOT IN (SELECT id FROM repos)"
+            )
+            removed = cur.rowcount or 0
+            # Duplicados exactos: se queda la fila más reciente.
+            self.conn.execute(
+                "DELETE FROM items WHERE id NOT IN "
+                "(SELECT MAX(id) FROM items GROUP BY provider, path)"
+            )
+            removed += self.conn.execute("SELECT changes()").fetchone()[0]
+            self.conn.commit()
+        if removed:
+            self._rebuild_fts()
+        return removed
 
     def list_repos(self, enabled_only: bool = False) -> list[Repo]:
         sql = "SELECT * FROM repos"
@@ -468,6 +525,10 @@ class Database:
         if filters.repo:
             where.append("i.repo_slug = ?")
             params.append(filters.repo)
+        else:
+            # La misma imagen puede estar en varios repos o repetida bajo
+            # otro nombre: en la galería se ve una sola vez.
+            where.append("i.duplicate_of = 0")
         if filters.category:
             where.append("i.category = ?")
             params.append(filters.category)
