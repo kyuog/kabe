@@ -1,0 +1,13 @@
+#!/bin/sh
+# AppRun de la AppImage de Kabe.
+#
+# La AppImage lleva una copia de Python y PyGObject no pueden incluirse
+# (dependen de GTK del sistema), así que la AppImage usa el Python del
+# sistema: es la opción ligera y funciona en MX Linux, Debian, Fedora,
+# Arch, openSUSE y derivadas donde python3-gi esté instalado.
+HERE="$(dirname "$(readlink -f "$0")")"
+
+export PYTHONPATH="$HERE/usr/lib/kabe${PYTHONPATH:+:$PYTHONPATH}"
+export KABE_DATA_DIR="$HERE/usr/share/kabe"
+
+exec python3 -m kabe "$@"

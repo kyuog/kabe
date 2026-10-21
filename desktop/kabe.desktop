@@ -1,0 +1,17 @@
+[Desktop Entry]
+Type=Application
+Version=1.5
+Name=Kabe
+Name[es]=Kabe
+GenericName=Wallpaper finder
+GenericName[es]=Buscador de fondos de pantalla
+Comment=Find, download and apply high-resolution wallpapers
+Comment[es]=Descubre, descarga y aplica fondos de pantalla en alta resolución
+Exec=kabe %F
+Icon=kabe
+Terminal=false
+Categories=Utility;GTK;DesktopSettings;
+Keywords=wallpaper;background;desktop;fondos;paisaje;4k;
+StartupNotify=true
+StartupWMClass=kabe
+X-GNOME-UsesNotifications=false

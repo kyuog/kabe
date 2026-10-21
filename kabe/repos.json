@@ -1,0 +1,138 @@
+{
+  "version": 1,
+  "comment": "Catálogo de repositorios de fondos que Kabe indexa. 'license_verified' indica que se comprobó la licencia en la API de GitHub; si es false, la interfaz muestra 'licencia no verificada'.",
+  "repos": [
+    {
+      "owner": "dharmx",
+      "name": "walls",
+      "branch": "main",
+      "folder": "",
+      "license": "",
+      "license_verified": false,
+      "categories": ["anime", "naturaleza", "ciudades", "arte", "mixto"],
+      "tags": ["4k", "mixto", "anime"],
+      "note": "El repositorio no declara LICENSE; se marca como licencia no verificada."
+    },
+    {
+      "owner": "D3Ext",
+      "name": "aesthetic-wallpapers",
+      "branch": "main",
+      "folder": "",
+      "license": "MIT",
+      "license_verified": true,
+      "categories": ["minimal", "arte", "anime"],
+      "tags": ["aesthetic", "minimal", "anime", "4k"],
+      "note": "MIT declarado en GitHub."
+    },
+    {
+      "owner": "makccr",
+      "name": "wallpapers",
+      "branch": "master",
+      "folder": "",
+      "license": "",
+      "license_verified": false,
+      "categories": ["mixto"],
+      "tags": ["4k", "mixto"],
+      "note": "Sin archivo LICENSE; licencia no verificada."
+    },
+    {
+      "owner": "linuxdotexe",
+      "name": "nordic-wallpapers",
+      "branch": "master",
+      "folder": "",
+      "license": "MIT",
+      "license_verified": true,
+      "categories": ["minimal", "naturaleza"],
+      "tags": ["nord", "minimal", "paisaje"],
+      "note": "MIT declarado en GitHub."
+    },
+    {
+      "owner": "rose-pine",
+      "name": "wallpapers",
+      "branch": "main",
+      "folder": "",
+      "license": "CC0-1.0",
+      "license_verified": true,
+      "categories": ["minimal", "arte"],
+      "tags": ["minimal", "pastel", "arte"],
+      "note": "CC0: dominio público."
+    },
+    {
+      "owner": "FrenzyExists",
+      "name": "wallpapers",
+      "branch": "main",
+      "folder": "",
+      "license": "MIT",
+      "license_verified": true,
+      "categories": ["mixto", "naturaleza", "ciudades"],
+      "tags": ["mixto", "4k"],
+      "note": "MIT declarado en GitHub."
+    },
+    {
+      "owner": "vinceliuice",
+      "name": "WhiteSur-wallpapers",
+      "branch": "main",
+      "folder": "",
+      "license": "MIT",
+      "license_verified": true,
+      "categories": ["minimal", "sistema"],
+      "tags": ["minimal", "macos", "claro"],
+      "note": "MIT declarado en GitHub."
+    },
+    {
+      "owner": "DenverCoder1",
+      "name": "minimalistic-wallpaper-collection",
+      "branch": "main",
+      "folder": "",
+      "license": "",
+      "license_verified": false,
+      "categories": ["minimal", "arte"],
+      "tags": ["minimal", "ilustracion"],
+      "note": "GitHub no reconoce una licencia SPDX en este repositorio; licencia no verificada."
+    },
+    {
+      "owner": "Dreamer-Paul",
+      "name": "Anime-Wallpaper",
+      "branch": "master",
+      "folder": "",
+      "license": "MIT",
+      "license_verified": true,
+      "categories": ["anime"],
+      "tags": ["anime", "4k"],
+      "note": "MIT declarado en GitHub."
+    },
+    {
+      "owner": "orangci",
+      "name": "walls-catppuccin-mocha",
+      "branch": "master",
+      "folder": "",
+      "license": "",
+      "license_verified": false,
+      "categories": ["minimal"],
+      "tags": ["minimal", "catppuccin", "oscuro"],
+      "note": "Sin archivo LICENSE; licencia no verificada."
+    },
+    {
+      "owner": "antoniosarosi",
+      "name": "Wallpapers",
+      "branch": "master",
+      "folder": "",
+      "license": "",
+      "license_verified": false,
+      "categories": ["mixto", "ciudades"],
+      "tags": ["mixto", "urbano"],
+      "note": "Sin archivo LICENSE; licencia no verificada."
+    },
+    {
+      "owner": "SniperGER",
+      "name": "iOS-Wallpapers",
+      "branch": "master",
+      "folder": "",
+      "license": "",
+      "license_verified": false,
+      "categories": ["naturaleza", "mixto"],
+      "tags": ["paisaje", "mixto"],
+      "note": "Colección de fondos de iOS; sin LICENSE, licencia no verificada."
+    }
+  ]
+}

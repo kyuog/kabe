@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kabe · Wallpapers 4K para Linux, ligero y sin complicaciones</title>
+<meta name="description" content="Kabe detecta tus monitores, busca entre miles de wallpapers en GitHub y aplica el perfecto en un clic. Ligero, para cualquier Linux.">
+<meta name="theme-color" content="#232A4D">
+<meta property="og:title" content="Kabe · Wallpapers 4K para Linux">
+<meta property="og:description" content="Detecta tu monitor, busca y aplica. Menos de 80 MB de RAM.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="screenshot-preview.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<style>
+:root{--ink:#232A4D;--ink2:#2E3762;--mist:#E8F1F2;--amber:#F2A541;
+--bg:var(--ink);--fg:var(--mist);--mut:rgba(232,241,242,.7);--line:rgba(232,241,242,.16);--card:rgba(232,241,242,.05);--ease:cubic-bezier(.2,.7,.2,1)}
+@media (prefers-color-scheme:light){:root{--bg:#F3F8F8;--fg:#232A4D;--mut:rgba(35,42,77,.72);--line:rgba(35,42,77,.16);--card:rgba(35,42,77,.045)}}
+*{box-sizing:border-box;margin:0}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{background:var(--bg);color:var(--fg);font:400 1.0625rem/1.6 Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI","Noto Sans","DejaVu Sans",sans-serif;-webkit-font-smoothing:antialiased}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--amber);outline-offset:3px;border-radius:6px}
+.wrap{max-width:1080px;margin:0 auto;padding:0 clamp(20px,5vw,40px)}
+header{position:sticky;top:0;z-index:10;backdrop-filter:blur(10px);background:color-mix(in srgb,var(--bg) 82%,transparent);border-bottom:1px solid var(--line)}
+header .wrap{display:flex;align-items:center;justify-content:space-between;height:64px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;font-weight:600;font-size:1.25rem;letter-spacing:-.02em}
+.brand svg{width:30px;height:30px}
+nav{display:flex;align-items:center;gap:6px}
+nav a,.snd{font:inherit;font-size:.95rem;color:var(--mut);text-decoration:none;padding:8px 12px;border-radius:999px;background:none;border:0;cursor:pointer;transition:color .2s,background .2s}
+nav a:hover,.snd:hover{color:var(--fg);background:var(--card)}
+.snd{display:flex;align-items:center;gap:8px}
+.snd i{width:8px;height:8px;border-radius:50%;background:var(--line);transition:background .2s,box-shadow .2s}
+.snd[aria-pressed=true] i{background:var(--amber);box-shadow:0 0 0 4px rgba(242,165,65,.25)}
+@media(max-width:640px){nav a{display:none}}
+.hero{display:grid;grid-template-columns:1.1fr .9fr;gap:clamp(24px,5vw,64px);align-items:center;min-height:calc(100svh - 64px);padding:48px 0}
+@media(max-width:820px){.hero{grid-template-columns:1fr;text-align:center;min-height:0;padding:56px 0}.hero p,.hero .cta{margin-inline:auto;justify-content:center}.art{order:-1;max-width:240px;margin:0 auto}}
+h1{font-size:clamp(2.4rem,6vw,4.4rem);line-height:1.04;letter-spacing:-.035em;font-weight:650}
+h1 em{font-style:normal;color:var(--amber)}
+.hero p{max-width:46ch;margin-top:20px;color:var(--mut);font-size:1.15rem}
+.cta{display:flex;gap:12px;margin-top:32px;flex-wrap:wrap}
+.btn{font:inherit;font-weight:600;font-size:1rem;display:inline-block;padding:14px 24px;border-radius:14px;text-decoration:none;cursor:pointer;border:1px solid var(--line);color:var(--fg);background:none;transition:transform .25s var(--ease),background .2s}
+.btn:hover{transform:translateY(-2px)}
+.btn:active{transform:translateY(0) scale(.98)}
+.btn.main{background:var(--amber);border-color:var(--amber);color:#232A4D}
+.art{width:100%;max-width:380px;justify-self:center;will-change:transform;transition:transform .2s linear}
+.art svg{width:100%;height:auto;display:block;filter:drop-shadow(0 30px 40px rgba(0,0,0,.25))}
+.sun{animation:rise 1.4s var(--ease) .2s both,float 7s ease-in-out 1.8s infinite}
+.mtn{animation:mtn 1.1s var(--ease) both}
+@keyframes rise{from{transform:translateY(90px);opacity:0}to{transform:none;opacity:1}}
+@keyframes mtn{from{transform:translateY(60px);opacity:0}to{transform:none;opacity:1}}
+@keyframes float{50%{transform:translateY(-5px)}}
+.hl{animation:fade .9s var(--ease) both}
+.hl:nth-child(2){animation-delay:.12s}.hl:nth-child(3){animation-delay:.24s}.hl:nth-child(4){animation-delay:.36s}
+@keyframes fade{from{opacity:0;transform:translateY(14px)}}
+section{padding:clamp(64px,10vw,120px) 0;border-top:1px solid var(--line)}
+h2{font-size:clamp(1.8rem,4vw,2.7rem);line-height:1.1;letter-spacing:-.03em;font-weight:650;max-width:20ch}
+.lead{color:var(--mut);margin-top:16px;max-width:52ch}
+.shots{display:grid;gap:26px;margin-top:44px}
+@media(min-width:860px){.shots{grid-template-columns:1fr 1fr}}
+.shots img{width:100%;display:block;border-radius:18px;border:1px solid var(--line);background:var(--ink)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:36px 32px;margin-top:56px}
+.f{position:relative;padding-top:22px}
+.f::before{content:"";position:absolute;top:0;left:0;height:2px;width:0;background:var(--amber);transition:width .9s var(--ease) .15s}
+.f.in::before{width:44px}
+.f h3{font-size:1.15rem;font-weight:600;letter-spacing:-.01em}
+.f p{color:var(--mut);margin-top:8px;font-size:1rem}
+.mons{display:flex;gap:clamp(12px,3vw,28px);margin-top:48px;align-items:flex-end;flex-wrap:wrap}
+.mon{flex:1 1 260px;font:inherit;color:inherit;background:none;border:0;cursor:pointer;text-align:left;padding:0}
+.mon svg{width:100%;height:auto;display:block;border-radius:18px;outline:2px solid var(--line);outline-offset:4px;transition:outline-color .25s,transform .35s var(--ease)}
+.mon:hover svg{transform:translateY(-4px)}
+.mon[aria-pressed=true] svg{outline-color:var(--amber)}
+.mon span{display:block;margin-top:14px;font-size:.92rem;color:var(--mut)}
+.mon.w{flex:2 1 420px}
+#status{margin-top:28px;color:var(--mut);min-height:1.6em}
+.steps{counter-reset:s;display:grid;gap:0;margin-top:48px}
+.steps li{list-style:none;counter-increment:s;display:grid;grid-template-columns:56px 1fr;gap:8px;padding:26px 0;border-top:1px solid var(--line)}
+.steps li::before{content:counter(s);font-size:1.6rem;font-weight:650;color:var(--amber)}
+.steps h3{font-size:1.2rem;font-weight:600}.steps p{color:var(--mut)}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:32px;margin-top:48px}
+.stats b{display:block;font-size:clamp(2.4rem,6vw,3.6rem);font-weight:650;letter-spacing:-.04em;line-height:1}
+.stats small{display:block;margin-top:8px;color:var(--mut);font-size:.95rem}
+.tags{display:flex;flex-wrap:wrap;gap:10px;margin-top:40px}
+.tags span{padding:8px 16px;border:1px solid var(--line);border-radius:999px;font-size:.95rem;color:var(--mut)}
+.code{position:relative;margin-top:36px;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px 22px 22px 24px;font:.95rem/1.8 ui-monospace,"JetBrains Mono","DejaVu Sans Mono",Menlo,monospace;overflow-x:auto;white-space:pre}
+.code button{position:absolute;top:12px;right:12px;font:.85rem Inter,system-ui,sans-serif;color:var(--fg);background:var(--card);border:1px solid var(--line);padding:6px 12px;border-radius:999px;cursor:pointer}
+.code .c{color:var(--mut)}
+footer{border-top:1px solid var(--line);padding:40px 0;color:var(--mut);font-size:.95rem}
+footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;align-items:center}
+footer a{text-decoration:none;margin-left:18px}footer a:hover{color:var(--fg)}
+.rv{opacity:0;transform:translateY(18px);transition:opacity .8s var(--ease),transform .8s var(--ease)}
+.rv.in{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}.rv{opacity:1;transform:none}html{scroll-behavior:auto}}
+</style>
+<noscript><style>.rv{opacity:1;transform:none}.hl{animation:none}</style></noscript>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+<symbol id="sc" viewBox="0 0 256 160"><rect width="256" height="160" fill="var(--a)"/><circle cx="190" cy="52" r="18" fill="var(--b)"/><path d="M0 126 L84 56 L134 100 L168 72 L256 126 V160 H0Z" fill="var(--c)"/></symbol>
+<symbol id="sw" viewBox="0 0 384 160"><rect width="384" height="160" fill="var(--a)"/><circle cx="270" cy="52" r="18" fill="var(--b)"/><path d="M0 126 L120 50 L190 104 L240 70 L384 126 V160 H0Z" fill="var(--c)"/></symbol>
+</svg>
+
+<header><div class="wrap">
+<a class="brand" href="#top" aria-label="Kabe, inicio">
+<svg viewBox="0 0 256 256" aria-hidden="true"><defs><clipPath id="h"><rect width="256" height="256" rx="58"/></clipPath></defs><rect width="256" height="256" rx="58" fill="#2E3762"/><g clip-path="url(#h)"><circle cx="180" cy="88" r="26" fill="#F2A541"/><path d="M0 204 L92 112 L148 168 L184 132 L256 204 V256 H0Z" fill="#E8F1F2"/></g></svg>
+kabe</a>
+<nav>
+<a href="#vista">Vista previa</a><a href="#ligero">Ligero</a><a href="#instalar">Instalar</a>
+<button class="snd" id="snd" type="button" aria-pressed="false" aria-label="Activar sonidos"><i></i>Sonido</button>
+</nav></div></header>
+
+<main id="top">
+<div class="wrap hero">
+<div>
+<h1 class="hl">Tu escritorio,<br><em>a su medida.</em></h1>
+<p class="hl">Kabe detecta tus monitores, busca entre miles de wallpapers en GitHub y aplica el perfecto en un clic. Anime, cultura, naturaleza, 4K y más, con menos de 80 MB de RAM.</p>
+<div class="cta hl"><a class="btn main" href="descargas/kabe_0.1.0_amd64.deb" download data-s="click">Descargar .deb</a><a class="btn" href="descargas/kabe-0.1.0-x86_64.AppImage" download data-s="click">AppImage</a></div>
+</div>
+<div class="art" id="art">
+<svg viewBox="0 0 256 256" role="img" aria-label="Logo de Kabe: un sol sobre una montaña">
+<defs><clipPath id="t"><rect width="256" height="256" rx="58"/></clipPath></defs>
+<rect width="256" height="256" rx="58" fill="#2E3762"/>
+<g clip-path="url(#t)"><circle class="sun" cx="180" cy="88" r="26" fill="#F2A541"/><path class="mtn" d="M0 204 L92 112 L148 168 L184 132 L256 204 V256 H0Z" fill="#E8F1F2"/></g>
+</svg></div>
+</div>
+
+<section id="vista"><div class="wrap">
+<h2 class="rv">Míralo en tu escritorio antes de aplicarlo</h2>
+<p class="lead rv">Kabe reconoce cada pantalla, su resolución y su relación de aspecto, y solo te muestra fondos que encajan. Toca un monitor para probarlo.</p>
+<div class="mons rv">
+<button class="mon" type="button" aria-pressed="true" data-n="Monitor 1" data-s="pick"><svg viewBox="0 0 256 160" style="--a:#232A4D;--b:#F2A541;--c:#E8F1F2"><use href="#sc"/></svg><span>Monitor 1 · 3840×2160 · 60 Hz</span></button>
+<button class="mon w" type="button" aria-pressed="false" data-n="Monitor 2 (ultrawide)" data-s="pick"><svg viewBox="0 0 384 160" style="--a:#3A4478;--b:#F2A541;--c:#C9DDE0"><use href="#sw"/></svg><span>Monitor 2 · 3440×1440 · 144 Hz</span></button>
+</div>
+<p id="status" role="status" aria-live="polite">Seleccionado: Monitor 1</p>
+</div></section>
+
+<section><div class="wrap">
+<h2 class="rv">Así se ve Kabe</h2>
+<p class="lead rv">La imagen manda: miniatura grande, cero adorno. La paleta —índigo, neblina y un solo ámbar— se respeta en toda la interfaz, y el tema del sistema decide si es clara u oscura.</p>
+<div class="shots rv">
+<img src="screenshot-main.png" alt="Ventana principal de Kabe con la galería de fondos" loading="lazy">
+<img src="screenshot-preview.png" alt="Vista previa del escritorio con los monitores detectados" loading="lazy">
+</div>
+</div></section>
+
+<section><div class="wrap">
+<h2 class="rv">Todo lo necesario, nada de lo que sobra</h2>
+<div class="grid">
+<div class="f rv"><h3>Detecta tu monitor</h3><p>Resolución, escala y disposición, en X11 y Wayland. Sin configurar nada.</p></div>
+<div class="f rv"><h3>Búsqueda instantánea</h3><p>Escribe “nezuko”, “montañas” o “4K minimalista” y filtra por resolución y aspecto.</p></div>
+<div class="f rv"><h3>Repositorios de GitHub</h3><p>Fuentes abiertas con licencia visible. Añade el tuyo pegando una URL.</p></div>
+<div class="f rv"><h3>Fotos y vídeos</h3><p>Fotos en alta resolución y vídeos animados como fondo, con vista previa antes de aplicarlos.</p></div>
+<div class="f rv"><h3>Multimonitor</h3><p>El mismo fondo en todos o uno distinto por pantalla, con rotación automática.</p></div>
+</div></div></section>
+
+<section><div class="wrap">
+<h2 class="rv">Tres pasos y listo</h2>
+<ol class="steps">
+<li class="rv"><div><h3>Abre Kabe</h3><p>Reconoce tus pantallas al instante y filtra lo que no se vería bien.</p></div></li>
+<li class="rv"><div><h3>Busca o explora</h3><p>Por categoría, etiqueta o texto. Miniaturas ligeras que se cargan solo al verlas.</p></div></li>
+<li class="rv"><div><h3>Aplica</h3><p>Un clic y el fondo cambia en XFCE, GNOME, KDE y más.</p></div></li>
+</ol></div></section>
+
+<section id="ligero"><div class="wrap">
+<h2 class="rv">Pensado para equipos modestos</h2>
+<p class="lead rv">Sin Electron ni navegador embebido. Funciona fluido en MX Linux XFCE y en cualquier distribución.</p>
+<div class="stats rv">
+<div><b><span data-n="80" data-p="&lt; ">0</span> MB</b><small>de RAM en uso normal</small></div>
+<div><b><span data-n="2" data-p="&lt; ">0</span> s</b><small>de arranque</small></div>
+<div><b><span data-n="15" data-p="&lt; ">0</span> MB</b><small>de instalación</small></div>
+</div>
+<div class="tags rv"><span>MX Linux XFCE</span><span>Debian</span><span>Ubuntu</span><span>Fedora</span><span>Arch</span><span>Linux Mint</span><span>openSUSE</span></div>
+</div></section>
+
+<section id="instalar"><div class="wrap">
+<h2 class="rv">Instálalo en un minuto</h2>
+<p class="lead rv">Disponible como .deb, AppImage y Flatpak.</p>
+<div class="code rv" id="cmd"><button type="button" id="cp" data-s="click">Copiar</button><span class="c"># Debian, Ubuntu, MX Linux</span>
+sudo apt install ./kabe_0.1.0_amd64.deb
+<span class="c"># Cualquier distribución</span>
+sudo ./install.sh
+<span class="c"># AppImage</span>
+chmod +x kabe-0.1.0-x86_64.AppImage &amp;&amp; ./kabe-0.1.0-x86_64.AppImage</div>
+<div class="cta rv" style="margin-top:26px">
+<a class="btn main" href="descargas/kabe_0.1.0_amd64.deb" download>Descargar .deb</a>
+<a class="btn" href="descargas/kabe-0.1.0-x86_64.AppImage" download>AppImage</a>
+<a class="btn" href="descargas/install.sh" download>install.sh</a>
+</div>
+<p class="lead rv" style="margin-top:22px">Dependencias: <code>python3</code> y <code>python3-gi</code> con <code>gir1.2-gtk-3.0</code>, que ya vienen en XFCE, GNOME, Cinnamon, MATE, LXQt y KDE.</p>
+</div></section>
+</main>
+
+<footer><div class="wrap"><span>© 2026 Kabe · 壁</span><span><a href="https://github.com/kabe-app/kabe">GitHub</a><a href="https://github.com/kabe-app/kabe/blob/main/LICENSE">Licencia</a><a href="https://github.com/kabe-app/kabe/issues">Sugerencias</a></span></div></footer>
+
+<script>
+(()=>{
+const rm=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+/* Sonido: Web Audio, sin archivos. Desactivado por defecto */
+let ctx=null,on=false;
+try{on=localStorage.getItem('kabe-snd')==='1'}catch(e){}
+const snd=$('#snd');
+const sync=()=>snd.setAttribute('aria-pressed',on);
+function tone(f,d=.12,v=.05,t=0,type='sine'){
+ if(!on||!ctx)return;
+ const o=ctx.createOscillator(),g=ctx.createGain(),n=ctx.currentTime+t;
+ o.type=type;o.frequency.value=f;
+ g.gain.setValueAtTime(0,n);g.gain.linearRampToValueAtTime(v,n+.015);g.gain.exponentialRampToValueAtTime(.0001,n+d);
+ o.connect(g).connect(ctx.destination);o.start(n);o.stop(n+d+.02);
+}
+const S={click:()=>{tone(523,.1,.05);tone(784,.14,.04,.05)},pick:()=>{tone(660,.1,.05);tone(990,.16,.035,.06)},
+ hover:()=>tone(880,.06,.012),on:()=>[523,659,784,1047].forEach((f,i)=>tone(f,.25,.05,i*.07)),copy:()=>{tone(784,.08,.05);tone(1175,.16,.04,.07)}};
+snd.addEventListener('click',()=>{
+ on=!on;
+ if(on&&!ctx){const A=window.AudioContext||window.webkitAudioContext;if(A)ctx=new A()}
+ if(ctx&&ctx.state==='suspended')ctx.resume();
+ try{localStorage.setItem('kabe-snd',on?'1':'0')}catch(e){}
+ sync();if(on)S.on();
+});
+sync();
+document.addEventListener('pointerdown',e=>{
+ if(on&&!ctx){const A=window.AudioContext||window.webkitAudioContext;if(A)ctx=new A()}
+ const t=e.target.closest('[data-s]');if(t&&S[t.dataset.s])S[t.dataset.s]();
+},{passive:true});
+$$('.btn,.mon,nav a').forEach(el=>el.addEventListener('pointerenter',e=>{if(e.pointerType==='mouse')S.hover()}));
+
+/* Aparición al hacer scroll */
+const io=new IntersectionObserver(es=>es.forEach(e=>{
+ if(!e.isIntersecting)return;
+ e.target.classList.add('in');io.unobserve(e.target);
+ e.target.querySelectorAll&&e.target.querySelectorAll('[data-n]').forEach(count);
+}),{threshold:.2});
+$$('.rv').forEach(el=>io.observe(el));
+
+/* Contadores */
+function count(el){
+ const end=+el.dataset.n,p=el.dataset.p||'';
+ if(rm){el.textContent=p+end;return}
+ const t0=performance.now(),D=1200;
+ (function f(t){const k=Math.min(1,(t-t0)/D),e=1-Math.pow(1-k,3);
+  el.textContent=p+Math.round(end*e);if(k<1)requestAnimationFrame(f)})(t0);
+}
+
+/* Selección de monitor */
+const st=$('#status');
+$$('.mon').forEach(b=>b.addEventListener('click',()=>{
+ $$('.mon').forEach(x=>x.setAttribute('aria-pressed',x===b));
+ st.textContent='Seleccionado: '+b.dataset.n;
+}));
+
+/* Copiar comandos */
+$('#cp').addEventListener('click',async e=>{
+ const txt=$('#cmd').innerText.replace(/^Copiar\s*/,'');
+ try{await navigator.clipboard.writeText(txt);e.target.textContent='Copiado';S.copy()}catch(_){e.target.textContent='Selecciona y copia'}
+ setTimeout(()=>e.target.textContent='Copiar',1800);
+});
+
+/* Parallax suave del logo (solo transform, un frame a la vez) */
+const art=$('#art');
+if(!rm&&matchMedia('(pointer:fine)').matches){
+ let raf=0,x=0,y=0;
+ addEventListener('pointermove',e=>{
+  x=(e.clientX/innerWidth-.5)*14;y=(e.clientY/innerHeight-.5)*14;
+  if(!raf)raf=requestAnimationFrame(()=>{art.style.transform=`translate3d(${x}px,${y}px,0)`;raf=0});
+ },{passive:true});
+}
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,36 @@
+app: io.github.kabe.Kabe
+runtime: org.gnome.Platform
+runtime-version: '45'
+sdk: org.gnome.Sdk
+command: kabe
+
+finish-args:
+  - --share=ipc
+  - --socket=wayland
+  - --socket=fallback-x11
+  - --device=dri
+  - --share=network
+  - --talk-name=org.kde.plasma.shell
+  - --filesystem=xdg-pictures
+  - --filesystem=xdg-download
+
+modules:
+  - name: kabe
+    buildsystem: simple
+    build-commands:
+      - pip3 install --prefix=/app --no-deps .
+      - install -Dm644 desktop/kabe.desktop /app/share/applications/io.github.kabe.Kabe.desktop
+      - install -Dm644 kabe-icon.svg /app/share/icons/hicolor/scalable/apps/io.github.kabe.Kabe.svg
+      - install -Dm644 share/icons/hicolor/256x256/apps/kabe.png /app/share/icons/hicolor/256x256/apps/io.github.kabe.Kabe.png
+      - install -Dm644 share/icons/hicolor/128x128/apps/kabe.png /app/share/icons/hicolor/128x128/apps/io.github.kabe.Kabe.png
+      - install -Dm644 share/icons/hicolor/64x64/apps/kabe.png /app/share/icons/hicolor/64x64/apps/io.github.kabe.Kabe.png
+      - install -Dm644 share/icons/hicolor/48x48/apps/kabe.png /app/share/icons/hicolor/48x48/apps/io.github.kabe.Kabe.png
+      - install -Dm644 share/icons/hicolor/32x32/apps/kabe.png /app/share/icons/hicolor/32x32/apps/io.github.kabe.Kabe.png
+      - install -Dm644 share/icons/hicolor/24x24/apps/kabe.png /app/share/icons/hicolor/24x24/apps/io.github.kabe.Kabe.png
+      - install -Dm644 share/icons/hicolor/16x16/apps/kabe.png /app/share/icons/hicolor/16x16/apps/io.github.kabe.Kabe.png
+      - install -Dm644 icons/kabe-symbolic.svg /app/share/icons/hicolor/symbolic/apps/io.github.kabe.Kabe-symbolic.svg
+      - install -d /app/share/kabe/share
+      - cp -r share/. /app/share/kabe/share/
+    sources:
+      - type: dir
+        path: ..

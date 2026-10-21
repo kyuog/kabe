@@ -1,0 +1,26 @@
+[project]
+name = "kabe"
+version = "0.1.0"
+description = "Kabe (壁) — descubridor y aplicador de fondos de pantalla en alta resolución para Linux"
+readme = "README.md"
+requires-python = ">=3.8"
+license = { text = "GPL-3.0-or-later" }
+authors = [{ name = "Kabe" }]
+keywords = ["wallpaper", "background", "linux", "gtk", "xfce"]
+dependencies = ["PyGObject>=3.30"]
+
+[project.scripts]
+kabe = "kabe.__main__:main"
+
+[project.urls]
+Homepage = "https://github.com/kabe-app/kabe"
+
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["kabe", "kabe.ui", "kabe.providers", "kabe.wallpaper"]
+
+[tool.setuptools.package-data]
+kabe = ["repos.json", "*.svg"]

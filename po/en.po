@@ -1,0 +1,374 @@
+# Kabe — catálogo de traducción
+msgid ""
+msgstr ""
+"Language: en\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: kabe/app.py:251
+msgid "Actualizando el índice de repositorios…"
+msgstr "Updating the repository index…"
+
+#: kabe/app.py:271
+msgid "Actualización con problemas: %s"
+msgstr "Update finished with problems: %s"
+
+#: kabe/app.py:273
+msgid "Índice actualizado: %d fondos"
+msgstr "Index updated: %d wallpapers"
+
+#: kabe/app.py:289
+msgid "Preferencias guardadas."
+msgstr "Preferences saved."
+
+#: kabe/app.py:307
+msgid "Repositorio añadido. Actualizando el índice…"
+msgstr "Repository added. Updating the index…"
+
+#: kabe/tray.py:34
+msgid "Kabe — fondos de pantalla"
+msgstr "Kabe — wallpapers"
+
+#: kabe/tray.py:42
+msgid "Abrir Kabe"
+msgstr "Open Kabe"
+
+#: kabe/tray.py:46
+msgid "Siguiente fondo"
+msgstr "Next wallpaper"
+
+#: kabe/tray.py:50
+msgid "Rotación automática"
+msgstr "Automatic rotation"
+
+#: kabe/tray.py:55
+msgid "Salir"
+msgstr "Quit"
+
+#: kabe/ui/dialogs.py:36
+msgid "Escalado (encaja sin recortar)"
+msgstr "Scaled (fits without cropping)"
+
+#: kabe/ui/dialogs.py:37
+msgid "Zoom (llena el monitor recortando)"
+msgstr "Zoom (fills the monitor, cropping)"
+
+#: kabe/ui/dialogs.py:38
+msgid "Centrado"
+msgstr "Centred"
+
+#: kabe/ui/dialogs.py:39
+msgid "Estirado"
+msgstr "Stretched"
+
+#: kabe/ui/dialogs.py:40
+msgid "Encogido"
+msgstr "Shrunk"
+
+#: kabe/ui/dialogs.py:47
+msgid "Automático (detectar escritorio)"
+msgstr "Automatic (detect desktop)"
+
+#: kabe/ui/dialogs.py:57
+msgid "feh (cualquier X11)"
+msgstr "feh (any X11)"
+
+#: kabe/ui/dialogs.py:83
+msgid "Sitio web"
+msgstr "Website"
+
+#: kabe/ui/dialogs.py:92
+msgid "Preferencias"
+msgstr "Preferences"
+
+#: kabe/ui/dialogs.py:97
+msgid "Cancelar"
+msgstr "Cancel"
+
+#: kabe/ui/dialogs.py:98
+msgid "Guardar"
+msgstr "Save"
+
+#: kabe/ui/dialogs.py:110
+msgid "Opcional: token personal de GitHub"
+msgstr "Optional: personal GitHub token"
+
+#: kabe/ui/dialogs.py:113
+msgid "Token de GitHub"
+msgstr "GitHub token"
+
+#: kabe/ui/dialogs.py:130
+msgid "Estilo del fondo"
+msgstr "Wallpaper style"
+
+#: kabe/ui/dialogs.py:138
+msgid "Aplicar con"
+msgstr "Apply using"
+
+#: kabe/ui/dialogs.py:145
+msgid "Resolución manual"
+msgstr "Manual resolution"
+
+#: kabe/ui/dialogs.py:151
+msgid "Actualizar índice cada (horas)"
+msgstr "Update index every (hours)"
+
+#: kabe/ui/dialogs.py:157
+msgid "Caché en disco (MB)"
+msgstr "Disk cache (MB)"
+
+#: kabe/ui/dialogs.py:161
+msgid "Cerrar la ventana va a la bandeja"
+msgstr "Closing the window goes to the tray"
+
+#: kabe/ui/dialogs.py:166
+msgid "Empezar sólo en la bandeja"
+msgstr "Start in the tray only"
+
+#: kabe/ui/dialogs.py:194
+msgid "Añadir repositorio"
+msgstr "Add repository"
+
+#: kabe/ui/dialogs.py:200
+msgid "Añadir"
+msgstr "Add"
+
+#: kabe/ui/window.py:74
+msgid "Cualquiera"
+msgstr "Any"
+
+#: kabe/ui/window.py:75
+msgid "4K o más"
+msgstr "4K and up"
+
+#: kabe/ui/window.py:76
+msgid "5K o más"
+msgstr "5K and up"
+
+#: kabe/ui/window.py:77
+msgid "Full HD o más"
+msgstr "Full HD and up"
+
+#: kabe/ui/window.py:78
+msgid "HD o más"
+msgstr "HD and up"
+
+#: kabe/ui/window.py:88
+msgid "Vertical"
+msgstr "Portrait"
+
+#: kabe/ui/window.py:102
+msgid "Kabe"
+msgstr "Kabe"
+
+#: kabe/ui/window.py:183
+msgid "Buscar fondos, temas o categorías"
+msgstr "Search wallpapers, themes or categories"
+
+#: kabe/ui/window.py:195
+msgid "Ordenar por"
+msgstr "Sort by"
+
+#: kabe/ui/window.py:198
+msgid "Sorpréndeme"
+msgstr "Surprise me"
+
+#: kabe/ui/window.py:199
+msgid "Muestra un fondo al azar"
+msgstr "Show a random wallpaper"
+
+#: kabe/ui/window.py:204
+msgid "Menú"
+msgstr "Menu"
+
+#: kabe/ui/window.py:206
+msgid "Actualizar índice"
+msgstr "Update index"
+
+#: kabe/ui/window.py:219
+msgid "Acerca de Kabe"
+msgstr "About Kabe"
+
+#: kabe/ui/window.py:240
+msgid "Tipo"
+msgstr ""
+
+#: kabe/ui/window.py:241
+msgid "Imágenes y vídeos"
+msgstr "Images and videos"
+
+#: kabe/ui/window.py:242
+msgid "Sólo imágenes"
+msgstr "Images only"
+
+#: kabe/ui/window.py:243
+msgid "Sólo vídeos"
+msgstr "Videos only"
+
+#: kabe/ui/window.py:246
+msgid "Categoría"
+msgstr "Category"
+
+#: kabe/ui/window.py:247
+msgid "Repositorio"
+msgstr "Repository"
+
+#: kabe/ui/window.py:248
+msgid "Resolución mínima"
+msgstr "Minimum resolution"
+
+#: kabe/ui/window.py:249
+msgid "Relación de aspecto"
+msgstr "Aspect ratio"
+
+#: kabe/ui/window.py:250
+msgid "Orientación"
+msgstr "Orientation"
+
+#: kabe/ui/window.py:256
+msgid "Sólo favoritos"
+msgstr "Favourites only"
+
+#: kabe/ui/window.py:257
+msgid "Sólo descargados"
+msgstr "Downloaded only"
+
+#: kabe/ui/window.py:258
+msgid "Cubrir el monitor"
+msgstr "Fit the monitor"
+
+#: kabe/ui/window.py:262
+msgid "Mostrar todo"
+msgstr "Show everything"
+
+#: kabe/ui/window.py:264
+msgid "Ignora el filtro de resolución del monitor"
+msgstr "Ignore the monitor resolution filter"
+
+#: kabe/ui/window.py:323
+msgid "Vista previa del escritorio"
+msgstr "Desktop preview"
+
+#: kabe/ui/window.py:331
+msgid "Aplicar a este monitor"
+msgstr "Apply to this monitor"
+
+#: kabe/ui/window.py:336
+msgid "Aplicar a todos"
+msgstr "Apply to all"
+
+#: kabe/ui/window.py:341
+msgid "Guardar en favoritos"
+msgstr "Save to favourites"
+
+#: kabe/ui/window.py:344
+msgid "Descargar"
+msgstr "Download"
+
+#: kabe/ui/window.py:349
+msgid "Otro parecido"
+msgstr "Something similar"
+
+#: kabe/ui/window.py:350
+msgid "Busca fondos del mismo estilo"
+msgstr "Find wallpapers with a similar style"
+
+#: kabe/ui/window.py:467
+msgid "No se pudo consultar el índice: %s"
+msgstr "Could not search the index: %s"
+
+#: kabe/ui/window.py:493
+msgid "Ningún fondo cumple los filtros activos. Prueba a mostrar todo."
+msgstr "No wallpaper matches the active filters. Try showing everything."
+
+#: kabe/ui/window.py:500
+msgid "Todos"
+msgstr "All"
+
+#: kabe/ui/window.py:509
+msgid "Todas"
+msgstr "All"
+
+#: kabe/ui/window.py:687
+msgid "Vídeo"
+msgstr "Video"
+
+#: kabe/ui/window.py:700
+msgid "licencia no verificada"
+msgstr "unverified licence"
+
+#: kabe/ui/window.py:703
+msgid "Quitar de favoritos"
+msgstr "Remove from favourites"
+
+#: kabe/ui/window.py:715
+msgid "sin monitores detectados"
+msgstr "no monitors detected"
+
+#: kabe/ui/window.py:720
+msgid "%(shown)d de %(total)d fondos%(env)s"
+msgstr "%(shown)d of %(total)d wallpapers%(env)s"
+
+#: kabe/ui/window.py:740
+msgid "No hay fondos que mostrar todavía. Actualiza el índice."
+msgstr "No wallpapers to show yet. Update the index."
+
+#: kabe/ui/window.py:753
+msgid "No hay suficientes etiquetas para buscar parecidos."
+msgstr "Not enough tags to find similar wallpapers."
+
+#: kabe/ui/window.py:775
+msgid "Guardado en favoritos"
+msgstr "Saved to favourites"
+
+#: kabe/ui/window.py:794
+msgid "Ya hay una descarga en curso."
+msgstr "A download is already in progress."
+
+#: kabe/ui/window.py:797
+msgid "Este fondo ya está en tu disco."
+msgstr "This wallpaper is already on your disk."
+
+#: kabe/ui/window.py:802
+msgid "Ya estaba descargado."
+msgstr "Already downloaded."
+
+#: kabe/ui/window.py:806
+msgid "Descargando…"
+msgstr "Downloading…"
+
+#: kabe/ui/window.py:842
+msgid "No se pudo descargar: %s"
+msgstr "Download failed: %s"
+
+#: kabe/ui/window.py:847
+msgid "Descarga completada."
+msgstr "Download complete."
+
+#: kabe/ui/window.py:854
+msgid "Selecciona un fondo primero."
+msgstr "Select a wallpaper first."
+
+#: kabe/ui/window.py:869
+msgid "Descargando el fondo antes de aplicarlo…"
+msgstr "Downloading the wallpaper before applying it…"
+
+#: kabe/ui/window.py:894
+msgid "Descargando el vídeo…"
+msgstr "Downloading the video…"
+
+#: kabe/ui/window.py:914
+msgid "No se pudo aplicar el fondo: %s"
+msgstr "Could not apply the wallpaper: %s"
+
+#: kabe/ui/window.py:936
+msgid "todos los monitores"
+msgstr "all monitors"
+
+#: kabe/ui/window.py:937
+msgid "el monitor principal"
+msgstr "the primary monitor"
+
+#: kabe/ui/window.py:939
+msgid "Fondo aplicado en %s."
+msgstr "Wallpaper applied on %s."

@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" role="img" aria-label="Kabe">
+  <!-- Icono simbólico: las mismas tres formas del logo (sol + montaña),
+       en un único color para poder heredarlo del tema (currentColor). -->
+  <g fill="currentColor">
+    <circle cx="11.1" cy="4.9" r="1.7"/>
+    <path d="M0.7 12.6 L5.2 7.1 L8.7 10.5 L10.6 8.6 L15.3 12.6 V14.7 H0.7 Z"/>
+  </g>
+</svg>
