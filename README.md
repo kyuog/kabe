@@ -2,6 +2,12 @@
   <img src="kabe-logo.svg" alt="kabe" width="320">
 </p>
 
+<p align="center">
+  <b>Python 3 · GTK3 · sin navegador embebido</b><br>
+  <a href="https://github.com/kabe-app/kabe/releases"><img alt="release" src="https://img.shields.io/badge/descarga-.deb%20%7C%20AppImage-232A4D"></a>
+  <a href="https://github.com/kabe-app/kabe/actions"><img alt="pruebas" src="https://img.shields.io/badge/pruebas-28a745"></a>
+</p>
+
 # Kabe (壁)
 
 **Kabe** —*pared* en japonés— es un descubridor y aplicador de fondos de
