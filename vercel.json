@@ -1,4 +1,6 @@
 {
+  "buildCommand": "python3 tools/build_site.py",
+  "outputDirectory": "dist/site",
   "cleanUrls": true,
   "trailingSlash": false,
   "headers": [

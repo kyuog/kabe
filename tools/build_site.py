@@ -44,21 +44,24 @@ def main() -> int:
         if copy(os.path.join(ROOT, "docs", name), os.path.join(OUT, name)):
             copied.append(name)
 
-    # Paquetes de descarga.
-    dist = os.path.join(ROOT, "dist")
-    if os.path.isdir(dist):
-        downloads = os.path.join(OUT, "descargas")
-        os.makedirs(downloads, exist_ok=True)
-        for name in sorted(os.listdir(dist)):
+    # Paquetes de descarga: primero la carpeta releases/ (versionada en el
+    # repositorio, para que Vercel también los sirva) y luego dist/.
+    downloads = os.path.join(OUT, "descargas")
+    os.makedirs(downloads, exist_ok=True)
+    for folder in (os.path.join(ROOT, "releases"), os.path.join(ROOT, "dist")):
+        if not os.path.isdir(folder):
+            continue
+        for name in sorted(os.listdir(folder)):
             if name.endswith((".deb", ".AppImage")):
-                shutil.copyfile(os.path.join(dist, name),
+                shutil.copyfile(os.path.join(folder, name),
                                 os.path.join(downloads, name))
                 copied.append(f"descargas/{name}")
-
-    if copy(os.path.join(ROOT, "packaging", "install.sh"),
-            os.path.join(OUT, "descargas", "install.sh")):
-        os.chmod(os.path.join(OUT, "descargas", "install.sh"), 0o755)
-        copied.append("descargas/install.sh")
+        if folder.endswith("releases") and os.path.exists(
+                os.path.join(folder, "install.sh")):
+            shutil.copyfile(os.path.join(folder, "install.sh"),
+                            os.path.join(downloads, "install.sh"))
+            os.chmod(os.path.join(downloads, "install.sh"), 0o755)
+            copied.append("descargas/install.sh")
 
     if copy(os.path.join(ROOT, "README.md"), os.path.join(OUT, "README.md")):
         copied.append("README.md")
