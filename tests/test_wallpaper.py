@@ -159,6 +159,14 @@ class TestApplierSelection(unittest.TestCase):
             applier = get_applier("xfce")
         self.assertEqual(applier.id, "xfce")
 
+    def test_preferred_backend_wins_over_the_detected_desktop(self) -> None:
+        """La elección del usuario manda aunque la detección diga otra cosa."""
+        from kabe.wallpaper import get_applier
+        with mock.patch.object(base, "have", lambda cmd: cmd in ("feh", "xfconf-query")), \
+             mock.patch.dict(os.environ, {"XDG_CURRENT_DESKTOP": "GNOME"}, clear=False):
+            applier = get_applier("xfce")
+        self.assertEqual(applier.id, "xfce")
+
 
 if __name__ == "__main__":
     unittest.main()

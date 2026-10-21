@@ -17,6 +17,7 @@ from .base import (
     PlasmaApplier,
     SwaybgApplier,
     SwwwApplier,
+    VideoApplier,
     XfceApplier,
 )
 from .env import detect_desktop, detect_session_type, detect_window_manager
@@ -81,25 +82,49 @@ def build_appliers() -> list[Applier]:
     return ordered
 
 
+def all_appliers() -> dict[str, Applier]:
+    """Todos los aplicadores que existen, indexados por su id.
+
+    Sirve para que la elección manual del usuario (Preferencias) gane siempre:
+    si pide XFCE, se usa XFCE aunque la detección diga otra cosa.
+    """
+    return {
+        "xfce": XfceApplier(),
+        "gnome": GSettingsApplier("org.gnome.desktop.background", "GNOME"),
+        "cinnamon": GSettingsApplier("org.cinnamon.desktop.background", "Cinnamon"),
+        "mate": MateApplier(),
+        "budgie": GSettingsApplier("org.gnome.desktop.background", "Budgie"),
+        "deepin": GSettingsApplier("com.deepin.wrap.gnome.desktop.background", "Deepin"),
+        "kde": PlasmaApplier(),
+        "lxqt": LxqtApplier(),
+        "lxde": LxdeApplier(),
+        "feh": FehApplier(),
+        "nitrogen": NitrogenApplier(),
+        "swww": SwwwApplier(),
+        "hyprpaper": HyprpaperApplier(),
+        "swaybg": SwaybgApplier(),
+        "video": VideoApplier(),
+    }
+
+
 def get_applier(preferred: str = "", kind: str = "image") -> Applier:
     """Devuelve el mejor aplicador disponible.
 
-    `preferred` fuerza uno concreto (id). Si no está disponible, se cae al
-    feh, que funciona en cualquier X11. Para vídeos se busca el reproductor
-    de fondos animados (mpvpaper / xwinwrap+mpv).
+    `preferred` fuerza uno concreto (id), aunque la detección automática
+    ponga otro. Si no está disponible, se cae al feh, que funciona en
+    cualquier X11. Para vídeos se busca el reproductor de fondos animados
+    (mpvpaper / xwinwrap+mpv).
     """
     if kind == "video":
         video = VideoApplier()
         if video.supported():
             return video
+    registry = all_appliers()
+    if preferred and preferred in registry:
+        chosen = registry[preferred]
+        if chosen.supported():
+            return chosen
     candidates = build_appliers()
-    if preferred:
-        for applier in candidates:
-            if applier.id == preferred and applier.supported():
-                return applier
-        for applier in candidates:
-            if applier.id == preferred:
-                return applier
     for applier in candidates:
         if applier.supported():
             return applier
