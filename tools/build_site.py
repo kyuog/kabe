@@ -52,7 +52,7 @@ def main() -> int:
         if not os.path.isdir(folder):
             continue
         for name in sorted(os.listdir(folder)):
-            if name.endswith((".deb", ".AppImage")):
+            if name.endswith((".deb", ".AppImage", ".tar.gz")):
                 shutil.copyfile(os.path.join(folder, name),
                                 os.path.join(downloads, name))
                 copied.append(f"descargas/{name}")
