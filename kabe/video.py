@@ -78,6 +78,22 @@ def poster_bytes(path_or_url: str, at_seconds: float = 1.0) -> Optional[bytes]:
     return out
 
 
+def poster_file(path_or_url: str, out_path: str, at_seconds: float = 1.0) -> Optional[str]:
+    """Guarda un fotograma a tamaño completo como PNG.
+
+    Sirve para usar un vídeo como fondo estático en los escritorios que no
+    admiten fondos animados (XFCE, GNOME, KDE…).
+    """
+    os.makedirs(os.path.dirname(out_path) or ".", exist_ok=True)
+    code, _out, err = _run([
+        "ffmpeg", "-v", "quiet", "-y", "-ss", f"{at_seconds:.2f}", "-i", path_or_url,
+        "-frames:v", "1", out_path,
+    ])
+    if code != 0 or not os.path.exists(out_path):
+        return None
+    return out_path
+
+
 def format_duration(seconds: int) -> str:
     """'1:23' o '0:07'."""
     if seconds <= 0:

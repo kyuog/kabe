@@ -119,6 +119,9 @@ def get_applier(preferred: str = "", kind: str = "image") -> Applier:
         video = VideoApplier()
         if video.supported():
             return video
+        # Sin reproductor de vídeos: el llamante debe saberlo (nunca se
+        # pone un MP4 como imagen de fondo: el escritorio queda en blanco).
+        return video
     registry = all_appliers()
     if preferred and preferred in registry:
         chosen = registry[preferred]

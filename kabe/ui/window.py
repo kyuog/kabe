@@ -22,7 +22,9 @@ from gi.repository import Gdk, GdkPixbuf, Gio, GLib, Gtk, Pango  # noqa: E402
 
 from ..db import SearchFilters  # noqa: E402
 from ..i18n import _  # noqa: E402
-from ..models import Monitor, MonitorLayout, WallpaperItem  # noqa: E402
+from ..models import (  # noqa: E402
+    Monitor, MonitorLayout, VIDEO_EXTS, WallpaperItem,
+)
 from ..net import HttpError  # noqa: E402
 from .. import paths  # noqa: E402
 from .. import wallpaper as wallpaper_mod  # noqa: E402
@@ -662,8 +664,20 @@ class KabeWindow(Gtk.ApplicationWindow):
             self.monitor_preview.set_active(monitor.name)
 
     def _set_preview_pixbuf(self, pixbuf) -> None:
+        """Muestra la vista previa, siempre acotada al ancho del panel."""
         if pixbuf is None:
             return
+        width = pixbuf.get_width()
+        height = pixbuf.get_height()
+        max_w, max_h = 280, 180
+        if width > max_w or height > max_h:
+            scale = min(max_w / width, max_h / height)
+            scaled = pixbuf.scale_simple(
+                max(1, int(width * scale)), max(1, int(height * scale)),
+                GdkPixbuf.InterpType.BILINEAR,
+            )
+            if scaled is not None:
+                pixbuf = scaled
         self.preview_image.set_from_pixbuf(pixbuf)
         self.monitor_preview.set_image(pixbuf)
 
@@ -886,8 +900,19 @@ class KabeWindow(Gtk.ApplicationWindow):
         self.ctx.task_pool.submit(_worker)
 
     def _apply_video(self, item: WallpaperItem, to_all: bool) -> None:
-        """Los vídeos se descargan enteros y se aplican con mpvpaper o
-        xwinwrap+mpv."""
+        """Aplica un vídeo como fondo.
+
+        Si el escritorio admite fondos animados (mpvpaper en Sway o
+        xwinwrap+mpv en X11) se reproduce el vídeo; si no, se aplica su
+        fotograma como imagen estática (pondrá un MP4 como fondo en XFCE,
+        el escritorio se quedaría en blanco).
+        """
+        applier = wallpaper_mod.get_applier("", kind="video")
+        if not applier.supported():
+            # Este escritorio no reproduce vídeos de fondo: aplicamos el
+            # fotograma como imagen (un MP4 dejaría el escritorio en blanco).
+            self._apply_video_poster(item, to_all)
+            return
         source = self._source_path(item)
         if os.path.exists(source):
             self._apply_local(source, item, to_all)
@@ -910,6 +935,46 @@ class KabeWindow(Gtk.ApplicationWindow):
 
         self.ctx.task_pool.submit(_worker)
 
+    def _apply_video_poster(self, item: WallpaperItem, to_all: bool) -> None:
+        """En un escritorio sin fondos animados, se aplica el fotograma."""
+        from ..video import poster_file
+        source = self._source_path(item)
+        if not os.path.exists(source):
+            self._set_status(_("Descargando el vídeo…"))
+            self.progress.set_fraction(0.0)
+            self.progress.set_text(_("Descargando…"))
+            self.progress.show()
+
+            def _progress(done: int, total: int) -> None:
+                GLib.idle_add(self._update_progress, done, total)
+
+            def _worker() -> None:
+                try:
+                    self.ctx.http.download(item.url, source, progress=_progress)
+                except (HttpError, OSError) as exc:
+                    GLib.idle_add(self._apply_failed, str(exc))
+                    return
+                GLib.idle_add(self._poster_ready, item, source, to_all)
+
+            self.ctx.task_pool.submit(_worker)
+            return
+        self._poster_ready(item, source, to_all)
+
+    def _poster_ready(self, item: WallpaperItem, source: str, to_all: bool) -> bool:
+        from ..video import poster_file
+        target = os.path.join(str(paths.downloads_dir()),
+                              self._download_name(item) + ".png")
+        poster = poster_file(source, target)
+        if not poster:
+            self.progress.hide()
+            self._set_status(_("No se pudo extraer el fotograma del vídeo."))
+            return False
+        self._apply_local(poster, item, to_all)
+        self._set_status(
+            _("Este escritorio no admite vídeos: se ha aplicado el fotograma.")
+        )
+        return False
+
     def _apply_failed(self, message: str) -> bool:
         self.progress.hide()
         self._set_status(_("No se pudo aplicar el fondo: %s") % message)
@@ -917,8 +982,10 @@ class KabeWindow(Gtk.ApplicationWindow):
 
     def _apply_local(self, path: str, item: WallpaperItem, to_all: bool) -> bool:
         self.progress.hide()
+        # El aplicador depende del archivo, no del elemento: un vídeo
+        # suelto va al reproductor y su fotograma (PNG) es una imagen normal.
         applier = self.ctx.applier
-        if item.is_video:
+        if os.path.splitext(path)[1].lower() in VIDEO_EXTS:
             applier = wallpaper_mod.get_applier(
                 getattr(self.config, "wallpaper_backend", ""), kind="video"
             )
