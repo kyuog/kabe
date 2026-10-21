@@ -17,7 +17,7 @@ DEFAULTS: dict[str, Any] = {
     "match_monitor": True,        # mostrar sólo imágenes que cubran el monitor
     "thumb_size": 300,            # px del lado mayor de la miniatura
     "thumb_memory_limit": 24,     # miniaturas vivas en RAM
-    "cache_limit_mb": 256,        # tope de caché en disco
+    "cache_limit_mb": 128,        # tope de caché en disco
     "index_ttl_hours": 12,        # caducidad del índice de repos en disco
     "sort": "relevance",          # relevance|recent|resolution|random
     "category": "",
@@ -52,7 +52,7 @@ class Config:
     match_monitor: bool = True
     thumb_size: int = 300
     thumb_memory_limit: int = 24
-    cache_limit_mb: int = 256
+    cache_limit_mb: int = 128
     index_ttl_hours: int = 12
     sort: str = "relevance"
     category: str = ""
